@@ -4,15 +4,15 @@ on:
   push:
     branches: [main]
       
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
     test:
       runs-on: ubuntu-latest
       steps:
-      - uses: actions/checkout@v7
-      - run: echo "Hello from $(hostname)"
-      - run: pwd && ls -A
-      - run: npm ci
-      - run: npm run lint
-      - run: npm test
+        - uses: actions/checkout@v7
+        - run: echo "Hello from $(hostname)"
+        - run: pwd && ls -A
+        - run: npm ci
+        - run: npm run lint
+        - run: npm test
