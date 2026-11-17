@@ -12,29 +12,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
       - uses: actions/setup-node@v3
         with:
           node-version: 22
+
       - run: echo "Hello from $(hostname)"
       - run: pwd && ls -A
       - run: node --version
       - run: npm ci
       - run: npm run lint
       - run: npm test
+
   docker:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
       - name: Build
         run: docker build --build-arg GIT_SHA=${{ github.sha }} -t quoute:${{ github.sha }} .
+
       - name: Start
         run: docker run -d --name quoute -p 3000:3000 quoute:${{ github.sha }}
+
       - name: Smoke test
         run: |
-          curl --retry 5 --retry-delay 5 --retry-all-errors http://localhost:3000/health
-          curl -fs5 http://localhost:3000/version | grep -q ${{ github.sha }}
+          curl -fsS --retry 5 --retry-delay 5 --retry-all-errors http://localhost:3000/health
+          curl -fsS http://localhost:3000/version | grep -q "${{ github.sha }}"
+
       - name: Container logs
         if: failure()
         run: docker logs quoute
-      
